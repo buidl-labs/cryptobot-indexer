@@ -1,0 +1,4 @@
+node_modules/
+migrations/
+seeders/
+yarn-error.log
