@@ -4,7 +4,7 @@ const { get } = require("axios");
 async function main() {
   sequelize.authenticate();
   const res = await updateCryptobots();
-  console.log(res.length, "cryptobots added to the DB.");
+  console.log(res?.length ? res.length : 0, "cryptobots added to the DB.");
 }
 
 async function updateCryptobots() {
