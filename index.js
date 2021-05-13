@@ -2,7 +2,7 @@ const { sequelize, Cryptobot, User } = require("./models");
 const { get } = require("axios");
 
 async function main() {
-  sequelize.authenticate();
+  await sequelize.authenticate();
   try {
     const res = await updateCryptobots();
     console.log(res?.length ? res.length : 0, "cryptobots added to the DB.");
@@ -36,6 +36,7 @@ async function updateCryptobots() {
     const cryptobots = resp.data;
     if (cryptobots === null || cryptobots?.length == 0) break;
     allCryptobots.push(...cryptobots);
+
     for (cryptobot of cryptobots) {
       console.log("Indexing cryptobot", cryptobot.token_id);
 
@@ -47,8 +48,12 @@ async function updateCryptobots() {
         console.log(`Bot-${cryptobot.token_id} already is in the DB.`);
         return;
       }
+      const dateCreated = new Date(cryptobot.timestamp);
 
-      bot = await Cryptobot.create({ token_id: cryptobot.token_id });
+      bot = await Cryptobot.create({
+        token_id: cryptobot.token_id,
+        createdAt: dateCreated.toUTCString(),
+      });
       console.log(`Bot-${bot.token_id} created.`);
 
       if (!cryptobot?.creators) {
